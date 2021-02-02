@@ -62,12 +62,8 @@ javascript: (function () {
             let dt = new Date(totalCredits[i].Time);
             msg += "你" + dt.toLocaleDateString('zh-TW') +
                 "打了" + totalCredits[i].Credits + "道\n"
-                + "金額為:" + totalCredits[i].Credits * 30 + "元";
+                + "金額為:" + totalCredits[i].Credits * 30 + "元\n";
         }
-        // var msg = new Date().toLocaleDateString('zh-TW') +
-        //     "\nTracks:" + totalTracks.length +
-        //     "\n你今天打了" + credits + "道\n"
-        //     + "金額為:" + credits * 30 + "元";
         console.log(msg);
         var msgDiv = xhr.responseXML.createElement("div");
         msgDiv.innerHTML = msg;
