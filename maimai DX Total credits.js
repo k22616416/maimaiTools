@@ -7,8 +7,8 @@ javascript: (function () {
             return;
         var totalTracks = Array();
         var totalCredits = Array();
-        var credits = 0;
-        var compTime = new Date();
+
+
         for (let i of xhr.responseXML.getElementsByClassName("p_10 t_l f_0 v_b")) {
             var trackStr = i.getElementsByClassName("sub_title t_c f_r f_11")[0].getElementsByClassName("v_b")[0].innerHTML
             var timeStr = i.getElementsByClassName("sub_title t_c f_r f_11")[0].getElementsByClassName("v_b")[1].innerHTML;
@@ -24,6 +24,12 @@ javascript: (function () {
             };
             totalTracks.push(obj);
         }
+        var compTime = new Date(totalTracks[0].Time);
+        var credits = 0;
+        totalCredits.push({
+            Date: totalTracks[0].Time,
+            Credits: credits
+        });
         for (let i = 0; i < totalTracks.length; i++) {
             if (new Date(totalTracks[i].Time).getDate() != compTime.getDate()) {
                 totalCredits.push({
@@ -34,10 +40,10 @@ javascript: (function () {
                 compTime = new Date(totalTracks[i].Time);
             }
             let n = parseInt(totalTracks[i].Track[7]);
-            credits++;
+            totalCredits[totalCredits.length - 1].Credits++;
             i += n - 1;
         }
-        var msg = '';
+        var msg = '目前的Records資料顯示：\n';
         for (let i = 0; i < totalCredits.length; i++) {
             let dt = new Date(totalCredits[i].Date);
             msg += "你" + dt.toLocaleDateString('zh-TW') +
@@ -47,7 +53,7 @@ javascript: (function () {
         console.log(msg);
         console.log("Power by k22616416.");
         var msgDiv = xhr.responseXML.createElement("div");
-        msgDiv.innerHTML = msg.replace('\n', "<br>");
+        msgDiv.innerHTML = msg.replace(/[\n]/g, "<br>");    //Regular Expression
         msgDiv.setAttribute('class', 'wrapper t_c');
         msgDiv.setAttribute('style', "background-color: yellow;text-align: left;font-family:'Times New Roman', Times, serif;");
         document.getElementsByClassName("wrapper t_c")[0].appendChild(msgDiv);
