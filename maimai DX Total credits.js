@@ -1,8 +1,4 @@
 javascript: (function () {
-    // if (['maimaidx-eng.com'].indexOf(document.location.host) < 0) {
-    //     alert("此工具需要在maimai DX-NET的頁面下才能運作");
-    //     return;
-    // }
     var xhr = new XMLHttpRequest();
     xhr.open("GET", "https://maimaidx-eng.com/maimai-mobile/record/", true);
     xhr.responseType = "document";
@@ -27,22 +23,6 @@ javascript: (function () {
                 Time: timeStr
             };
             totalTracks.push(obj);
-
-            // if (trackTime.getDate() == compTime.getDate()) {
-            //     var obj = {
-            //         Track: trackStr,
-            //         Time: timeStr
-            //     };
-            //     totalTracks.push(obj);
-            // }
-            // else {
-            //     compTime = new Date(timeStr);
-            //     var obj = {
-            //         Track: trackStr,
-            //         Time: timeStr
-            //     };
-            //     totalTracks.push(obj);
-            // }
         }
         for (let i = 0; i < totalTracks.length; i++) {
             if (new Date(totalTracks[i].Time).getDate() != compTime.getDate()) {
@@ -59,16 +39,17 @@ javascript: (function () {
         }
         var msg = '';
         for (let i = 0; i < totalCredits.length; i++) {
-            let dt = new Date(totalCredits[i].Time);
+            let dt = new Date(totalCredits[i].Date);
             msg += "你" + dt.toLocaleDateString('zh-TW') +
-                "打了" + totalCredits[i].Credits + "道\n"
-                + "金額為:" + totalCredits[i].Credits * 30 + "元\n";
+                " 打了" + totalCredits[i].Credits + "道 "
+                + "金額為：" + totalCredits[i].Credits * 30 + "元\n";
         }
         console.log(msg);
+        console.log("Power by k22616416.");
         var msgDiv = xhr.responseXML.createElement("div");
-        msgDiv.innerHTML = msg;
+        msgDiv.innerHTML = msg.replace('\n', "<br>");
         msgDiv.setAttribute('class', 'wrapper t_c');
-        msgDiv.setAttribute('style', "background-color: yellow;");
+        msgDiv.setAttribute('style', "background-color: yellow;text-align: left;font-family:'Times New Roman', Times, serif;");
         document.getElementsByClassName("wrapper t_c")[0].appendChild(msgDiv);
     };
     xhr.send();
