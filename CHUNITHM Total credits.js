@@ -16,23 +16,14 @@ javascript: (function () {
                 Image:null,
                 Track:i.getElementsByClassName("play_data_side")[0].getElementsByClassName("box02 play_track_block")[0].getElementsByClassName("play_track_text")[0].innerHTML,
                 Level:i.getElementsByClassName("play_data_side")[0].getElementsByClassName("box02 play_track_block")[0].getElementsByClassName("play_track_result")[0].children[0].getAttribute("src"),
-                // 110/02/05                
+                SongTitle:i.getElementsByClassName("play_data_side")[0].getElementsByClassName("box02 play_musicdata_block")[0].getElementsByClassName("play_musicdata_title")[0].innerHTML,
+                
+                Score:i.getElementsByClassName("play_data_side")[0].getElementsByClassName("box02 play_musicdata_block")[0].getElementsByClassName("play_musicdata_score clearfix")[0].getElementsByClassName("play_musicdata_score_text")[0].innerHTML
             }
-            
-            
-            i.getElementsByClassName("play_data_side")[0];
-            // var timeStr = i.getElementsByClassName("play_datalist_date")[0].innerHTML;
-            var trackTime = new Date(timeStr);
-            if (trackTime == NaN) {
-                continue;
-            }
-
-            trackTime.setHours(trackTime.getHours() - 1);
-            var obj = {
-                Track: trackStr,
-                Time: timeStr
-            };
-            totalTracks.push(obj);
+            trackInfo.Score = trackInfo.Score.replace("Score：");
+            // trackInfo.Score = trackInfo.Score.replace(",");
+            console.log(trackInfo);
+            totalTracks.push(trackInfo);
         }
         var compTime = new Date(totalTracks[0].Time);
         var credits = 0;
@@ -64,7 +55,7 @@ javascript: (function () {
         console.log("Power by k22616416.");
         var msgDiv = xhr.responseXML.createElement("div");
         msgDiv.innerHTML = msg.replace(/[\n]/g, "<br>");    //Regular Expression
-        msgDiv.setAttribute('class', 'wrapper t_c');
+        // msgDiv.setAttribute('class', 'wrapper t_c');
         msgDiv.setAttribute('style', "background-color: yellow;text-align: left;font-family:'Times New Roman', Times, serif;");
         document.getElementsByClassName("wrapper t_c")[0].appendChild(msgDiv);
     };
