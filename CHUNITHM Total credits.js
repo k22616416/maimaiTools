@@ -11,13 +11,13 @@ javascript: (function () {
 
         for (let i of xhr.responseXML.getElementsByClassName("frame02 w400")) {
             var trackInfo = {
-                Time:i.getElementsByClassName("play_datalist_date")[0].innerHTML,
-                Image:null,
-                Track:i.getElementsByClassName("play_data_side")[0].getElementsByClassName("box02 play_track_block")[0].getElementsByClassName("play_track_text")[0].innerHTML,
-                Level:i.getElementsByClassName("play_data_side")[0].getElementsByClassName("box02 play_track_block")[0].getElementsByClassName("play_track_result")[0].children[0].getAttribute("src"),
-                SongTitle:i.getElementsByClassName("play_data_side")[0].getElementsByClassName("box02 play_musicdata_block")[0].getElementsByClassName("play_musicdata_title")[0].innerHTML,
-                
-                Score:i.getElementsByClassName("play_data_side")[0].getElementsByClassName("box02 play_musicdata_block")[0].getElementsByClassName("play_musicdata_score clearfix")[0].getElementsByClassName("play_musicdata_score_text")[0].innerHTML
+                Time: i.getElementsByClassName("play_datalist_date")[0].innerHTML,
+                Image: null,
+                Track: i.getElementsByClassName("play_data_side")[0].getElementsByClassName("play_track_block")[0].getElementsByClassName("play_track_text")[0].innerHTML,
+                Level: i.getElementsByClassName("play_data_side")[0].getElementsByClassName("play_track_block")[0].getElementsByClassName("play_track_result")[0].children[0].getAttribute("src"),
+                SongTitle: i.getElementsByClassName("play_data_side")[0].getElementsByClassName("box02 play_musicdata_block")[0].getElementsByClassName("play_musicdata_title")[0].innerHTML,
+
+                Score: i.getElementsByClassName("play_data_side")[0].getElementsByClassName("box02 play_musicdata_block")[0].getElementsByClassName("play_musicdata_score clearfix")[0].getElementsByClassName("play_musicdata_score_text")[0].innerHTML
             }
             trackInfo.Score = trackInfo.Score.replace("Score：");
             console.log(trackInfo);
@@ -55,7 +55,7 @@ javascript: (function () {
         var msgDiv = xhr.responseXML.createElement("div");
         msgDiv.innerHTML = msg.replace(/[\n]/g, "<br>");    //Regular Expression
         msgDiv.setAttribute('style', "background-color: aqua;text-align: left;font-family:'Times New Roman', Times, serif;");
-        document.getElementById("wrap").insertBefore(msgDiv,document.getElementById("inner"));
+        document.getElementById("wrap").insertBefore(msgDiv, document.getElementById("inner"));
     };
     xhr.send();
 })();
