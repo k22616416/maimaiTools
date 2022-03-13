@@ -28,21 +28,19 @@ chrome.find_element_by_xpath(
     '/html/body/div[2]/div[2]/main/article/section[2]/dl/dt/ul/li/span').click()
 
 WebDriverWait(chrome, 20).until(
-    EC.presence_of_element_located((By.XPATH, '/html/body/div[2]/div[2]/main/article/section[2]/dl/dd/form/ul/li[1]/div[2]/input')))
+    EC.visibility_of_element_located((By.XPATH, '/html/body/div[2]/div[2]/main/article/section[2]/dl/dd/form/ul/li[1]/div[2]/input')))
 # usernameObj = chrome.find_element_by_id('sid')
-usernameObj = chrome.find_element_by_xpath(
-    '/html/body/div[2]/div[2]/main/article/section[2]/dl/dd/form/ul/li[1]/div[2]/input')
-print(usernameObj)
+chrome.find_element_by_xpath(
+    '/html/body/div[2]/div[2]/main/article/section[2]/dl/dd/form/ul/li[1]/div[2]/input').send_keys(username)
 
-usernameObj.send_keys(username)
 WebDriverWait(chrome, 20).until(
-    EC.presence_of_element_located((By.XPATH, '/html/body/div[2]/div[2]/main/article/section[2]/dl/dd/form/ul/li[2]/div[2]/input')))
+    EC.visibility_of_element_located((By.XPATH, '/html/body/div[2]/div[2]/main/article/section[2]/dl/dd/form/ul/li[2]/div[2]/input')))
 passwordObj = chrome.find_element_by_xpath(
-    '/html/body/div[2]/div[2]/main/article/section[2]/dl/dd/form/ul/li[2]/div[2]/input')
-passwordObj.send_keys(password)
+    '/html/body/div[2]/div[2]/main/article/section[2]/dl/dd/form/ul/li[2]/div[2]/input').send_keys(password)
+
 
 WebDriverWait(chrome, 20).until(
-    EC.presence_of_element_located((By.XPATH, '/html/body/div[2]/div[2]/main/article/section[2]/dl/dd/form/div/input')))
+    EC.element_to_be_clickable((By.XPATH, '/html/body/div[2]/div[2]/main/article/section[2]/dl/dd/form/div/input')))
 
 chrome.find_element_by_xpath(
     '/html/body/div[2]/div[2]/main/article/section[2]/dl/dd/form/div/input').click()
