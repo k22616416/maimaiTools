@@ -1,3 +1,5 @@
+from queue import Empty
+from urllib import request
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.keys import Keys
@@ -12,6 +14,10 @@ from pandas.core.frame import DataFrame
 from enum import Enum
 from PIL import Image
 import requests
+from io import StringIO
+import os
+import urllib.request
+
 
 username = 'k22616416'
 password = 'kk013579'
@@ -54,20 +60,35 @@ def Login_maimai_net():
 
 
 def GetNewPhotos():
-
     chrome.get("https://maimaidx-eng.com/maimai-mobile/photo/")
     WebDriverWait(chrome, 20).until(
-        EC.visibility_of_element_located((By.XPATH, '/html/body/div[2]/div[2]')))
-    photoFrames = chrome.find_elements_by_xpath('/html/body/div[2]/div[2]')
-    print(len(photoFrames))
-    for frame in photoFrames:
-        photo = frame.find_element_by_xpath(
-            '/html/body/div[2]/div[2]/div/img[3]')
+        EC.visibility_of_all_elements_located((By.CSS_SELECTOR, '.m_10.p_5.f_0')))
+    # photoFrames = chrome.find_elements_by_xpath('/html/body/div[2]/div[2]')
+    photoFrames = chrome.find_elements_by_css_selector('.m_10.p_5.f_0')
 
+    print(len(photoFrames))
+    count = 0
+    for frame in photoFrames:
+        # photo = frame.find_element_by_xpath(
+        #     '/html/body/div[2]/div[2]/div/img[3]')
+        WebDriverWait(chrome, 20).until(
+            EC.visibility_of_all_elements_located((By.CSS_SELECTOR, '.block_info.p_3.f_11.white')))
+        dateTag = frame.find_element_by_css_selector(
+            '.block_info.p_3.f_11.white')
+        date = dateTag.text
+        if date == None:
+            print('Date empty')
+            continue
+
+        # 3/14 photo css需要修改
+        photo = frame.find_element_by_css_selector('.w_430')
         imgurl = photo.get_attribute("src")
-        img_data = requests.get(imgurl).content
-        with open('./image_name.jpg', 'wb') as handler:
-            handler.write(img_data)
+        chrome.get(imgurl)
+
+        with open(date+'.png', 'wb') as file:
+            file.write(chrome.find_element_by_xpath(
+                "/html/body/img").screenshot_as_png)
+        count += 1
 
 
 def main():
