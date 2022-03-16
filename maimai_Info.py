@@ -38,7 +38,7 @@ MUSIC_LEVEL_IMAGE_PATHS = {
 
 MUSIC_TYPE_IMAGE_PATHS = {
     "DX": "\\asset\\type\\music_dx.png",
-    "STANDARD": "\\asset\\type\\music_standard.png"
+    "でらっくす": "\\asset\\type\\music_standard.png"
 }
 
 
@@ -103,9 +103,15 @@ def CompareImages(pic1: image, pic2: image) -> bool:
     return (differ == 0)
 
 
-def LevelClassification(img1) -> str:
+def LevelClassification(imgUrl) -> str:
     for i in MUSIC_LEVEL_IMAGE_PATHS:
-        if CompareImages(Image.open(os.getcwd() + MUSIC_LEVEL_IMAGE_PATHS[i]), Image.open(img1)):
+        if CompareImages(Image.open(os.getcwd() + MUSIC_LEVEL_IMAGE_PATHS[i]), Image.open(requests.get(imgUrl, stream=True).raw)):
+            return i
+
+
+def MusicTypefication(imgUrl) -> str:
+    for i in MUSIC_TYPE_IMAGE_PATHS:
+        if CompareImages(Image.open(os.getcwd() + MUSIC_TYPE_IMAGE_PATHS[i]), Image.open(requests.get(imgUrl, stream=True).raw)):
             return i
 
 
@@ -128,9 +134,25 @@ def GetNewPhotos():
             print('Date empty')
             continue
 
-        photo = frame.find_elements_by_css_selector('.w_430')[1]
+        # 抓歌名
+        songName = frame.find_element_by_css_selector(
+            '.black_block.w_430.m_3.m_b_5.p_5.t_l.f_15.break').text
 
-        imgurl = photo.get_attribute("src")
+        # 抓圖片Url
+        photoTag = frame.find_elements_by_css_selector('.w_430')[1]
+        imgurl = photoTag.get_attribute("src")
+
+        # 抓難度
+        levelUrl = frame.find_element_by_css_selector(
+            '.h_16.f_l').get_attribute("src")
+        level = LevelClassification(levelUrl)
+
+        # 抓類型
+        musicTypeUrl = frame.find_element_by_css_selector(
+            '.music_kind_icon.f_r').get_attribute("src")
+        musicType = MusicTypefication(musicTypeUrl)
+
+        # 開新分頁存圖
         chrome.execute_script("window.open('"+imgurl+"');")
         chrome.switch_to_window(
             chrome.window_handles[len(chrome.window_handles)-1])
@@ -144,9 +166,8 @@ def GetNewPhotos():
             print("Make new dir : " + dirPath)
 
         # 去掉日期中的/跟:
-        # level = LevelClassification()
         imgName = os.path.join(
-            dirPath, (date.replace('/', '')).replace(':', '.') + '.png')
+            dirPath, (date.replace('/', '')).replace(':', '.') + ' ' + songName + " " + level + '(' + musicType + ').png')
 
         # 檢查是否已存在
         if not os.path.isfile(imgName):
@@ -164,11 +185,9 @@ def GetNewPhotos():
 
 
 def main():
-    print(LevelClassification(
-        "https://maimaidx-eng.com/maimai-mobile/img/diff_advanced.png"))
 
-    # Login_maimai_net()
-    # GetNewPhotos()
+    Login_maimai_net()
+    GetNewPhotos()
 
 
 if __name__ == '__main__':
