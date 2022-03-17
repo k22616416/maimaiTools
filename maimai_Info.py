@@ -1,3 +1,5 @@
+from http import client
+import discord
 from queue import Empty
 from urllib import request
 from matplotlib import image
@@ -22,12 +24,19 @@ import urllib.request
 import math
 import operator
 from functools import reduce
+import json
+import threading
+import time
+import asyncio
+import queue
 
-username = 'k22616416'
-password = 'kk013579'
+usernameCollection = ['k22616416']
+passwordCollection = ['kk013579']
 
 url = 'https://lng-tgk-aime-gw.am-all.net/common_auth/login?site_id=maimaidxex&redirect_url=https://maimaidx-eng.com/maimai-mobile/&back_url=https://maimai.sega.com/'
 imageSavePath = 'files'
+
+DISCORD_BOT_TOKEN = 'Nzc3MDk1MjgyMjE0Njk5MDI5.X6-cYQ.V-RNuOlr5kJYwlLnroAxoTOFwYo'
 
 MUSIC_LEVEL_IMAGE_PATHS = {
     "BASIC": "/asset/level/diff_basic.png",
@@ -66,11 +75,11 @@ options.add_argument("--disable-notifications")
 options.add_experimental_option(
     "excludeSwitches", ['enable-automation', 'enable-logging'])
 
-chrome = webdriver.Chrome('./chromedriver.exe', chrome_options=options)
-chrome.get(url)
+threads = []
+workQueue = queue.Queue()
 
 
-def Login_maimai_net():
+def Login_maimai_net(chrome: webdriver, username: str, password: str):
 
     # click SEGA ID button
     WebDriverWait(chrome, 20).until(EC.presence_of_element_located(
@@ -115,7 +124,7 @@ def MusicTypefication(imgUrl) -> str:
             return i
 
 
-def GetNewPhotos():
+def GetNewPhotos(chrome: webdriver, username: str):
     chrome.get("https://maimaidx-eng.com/maimai-mobile/photo/")
     WebDriverWait(chrome, 20).until(
         EC.visibility_of_all_elements_located((By.CSS_SELECTOR, '.m_10.p_5.f_0')))
@@ -157,7 +166,7 @@ def GetNewPhotos():
         chrome.switch_to_window(
             chrome.window_handles[len(chrome.window_handles)-1])
 
-        dirPath = os.path.join(imageSavePath, (date.split(' '))[
+        dirPath = os.path.join(imageSavePath, username, (date.split(' '))[
             0].replace('/', ''))
 
         # 檢查資料夾路徑
@@ -178,17 +187,88 @@ def GetNewPhotos():
                 file.write(chrome.find_element_by_xpath(
                     "/html/body/img").screenshot_as_png)
             print("Save : " + imgName)
+            count += 1
 
         chrome.close()
         chrome.switch_to_window(mainWindow)
-        count += 1
 
 
-def main():
+class BotAddAutoSaveScheduleUser(threading.Thread):
+    def __init__(self, targetName):
+        threading.Thread.__init__(self)
+        self.targetName = targetName
+        self.status = 1
+        self.loop = asyncio.get_event_loop()
 
-    Login_maimai_net()
-    GetNewPhotos()
+    def run(self):
+        while self.status != 5:
+            if self.status == 1:
+                self.Test()
+                self.status = 2
+                # def BotAddAutoSaveScheduleUser(discordUsername):
+                #     loop = asyncio.new_event_loop()
+                #     asyncio.set_event_loop(loop)
+                #     loop.run_until_complete(discordUsername.send("123"))
+                #     # loop.close()
+
+    def Test(self):
+        self.loop.run_until_complete(self.SendMsg("123"))
+        time.sleep(5)
+        self.loop.run_until_complete(self.SendMsg("123"))
+        time.sleep(5)
+
+    async def SendMsg(self, msg):
+        await self.targetName.send(msg)
 
 
-if __name__ == '__main__':
-    main()
+client = discord.Client()
+# 調用event函式庫
+
+
+@client.event
+# 當機器人完成啟動時
+async def on_ready():
+    print('目前登入身份：', client.user)
+
+
+@client.event
+# 當有訊息時
+async def on_message(message):
+    # 排除自己的訊息，避免陷入無限循環
+    if message.author == client.user:
+        return
+
+    if message.content.startswith('.uwu'):
+        # 分割訊息成兩份
+        tmp = message.content.split(" ")
+        # 如果分割後串列長度只有1
+        if len(tmp) == 1:
+            await message.channel.send("蛤?")
+        elif tmp[1] == 'maimai':
+            if tmp[2] == '自動存圖':
+
+                # 設定自動存圖的maimai net帳密
+                # threads.append(threading.Thread(
+                #     target=BotAddAutoSaveScheduleUser, args=(message.author,)))
+                # threads[len(threads)-1].start()
+                workQueue.put(message.author)
+                BotAddAutoSaveScheduleUser(message.author).start()
+
+        else:
+            await message.channel.send(tmp[1])
+
+    elif message.content.startswith('ping'):
+        await message.channel.send("pong")
+
+client.run(DISCORD_BOT_TOKEN)  # TOKEN在剛剛Discord Developer那邊「BOT」頁面裡面
+
+
+# def main():
+#     chrome = webdriver.Chrome('./chromedriver.exe', chrome_options=options)
+#     chrome.get(url)
+#     Login_maimai_net(chrome, usernameCollection[0], passwordCollection[0])
+#     GetNewPhotos(chrome, usernameCollection[0])
+
+
+# if __name__ == '__main__':
+#     main()
