@@ -1,5 +1,7 @@
 from http import client
 import discord
+from discord.ext import tasks, commands
+
 from queue import Empty
 from urllib import request
 from matplotlib import image
@@ -14,20 +16,19 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from bs4 import BeautifulSoup as Soup
 from selenium.webdriver.common.action_chains import ActionChains
-from pandas.core.frame import DataFrame
+# from pandas.core.frame import DataFrame
 from enum import Enum
 from PIL import Image
 import requests
-from io import StringIO
+# from io import StringIO
 import os
-import urllib.request
+# import urllib.request
 import math
 import operator
 from functools import reduce
-import json
 import threading
+import json
 import time
-import asyncio
 import queue
 
 usernameCollection = ['k22616416']
@@ -36,10 +37,10 @@ passwordCollection = ['kk013579']
 url = 'https://lng-tgk-aime-gw.am-all.net/common_auth/login?site_id=maimaidxex&redirect_url=https://maimaidx-eng.com/maimai-mobile/&back_url=https://maimai.sega.com/'
 imageSavePath = 'files'
 
-DISCORD_BOT_TOKEN = 'Nzc3MDk1MjgyMjE0Njk5MDI5.X6-cYQ.V-RNuOlr5kJYwlLnroAxoTOFwYo'
+DISCORD_BOT_TOKEN = ''
 
 MUSIC_LEVEL_IMAGE_PATHS = {
-    "BASIC": "/asset/level/diff_basic.png",
+    "BASIC": "\\asset\\level\\diff_basic.png",
     "ADVANCED": "\\asset\\level\\diff_advanced.png",
     "EXPERT": "\\asset\\level\\diff_expert.png",
     "MASTER": "\\asset\\level\\diff_master.png"
@@ -50,6 +51,7 @@ MUSIC_TYPE_IMAGE_PATHS = {
     "でらっくす": "\\asset\\type\\music_standard.png"
 }
 
+SAVE_JSON_PATHS = '/files/AutoSaveList.json'
 
 # class MusicLevels(Enum):
 #     BASIC = 0
@@ -77,6 +79,26 @@ options.add_experimental_option(
 
 threads = []
 workQueue = queue.Queue()
+
+
+class MyCog(commands.Cog):
+    def __init__(self, bot):
+        self.index = 0
+        self.bot = bot
+        self.printer.start()
+
+    def cog_unload(self):
+        self.printer.cancel()
+
+    @tasks.loop(seconds=5.0)
+    async def printer(self):
+        print(self.index)
+        self.index += 1
+
+    @printer.before_loop
+    async def before_printer(self):
+        print('waiting...')
+        await self.bot.wait_until_ready()
 
 
 def Login_maimai_net(chrome: webdriver, username: str, password: str):
@@ -193,32 +215,29 @@ def GetNewPhotos(chrome: webdriver, username: str):
         chrome.switch_to_window(mainWindow)
 
 
-class BotAddAutoSaveScheduleUser(threading.Thread):
-    def __init__(self, targetName):
-        threading.Thread.__init__(self)
-        self.targetName = targetName
-        self.status = 1
-        self.loop = asyncio.get_event_loop()
+def SetAutoSaveUser(author: str, username: str, passwd: str):
+    fileName = os.path.join(os.getcwd() + SAVE_JSON_PATHS)
+    file = open(fileName, "r+")
+    try:
+        with file as f:
+            data = json.load(f)
+    except:
+        return 1
 
-    def run(self):
-        while self.status != 5:
-            if self.status == 1:
-                self.Test()
-                self.status = 2
-                # def BotAddAutoSaveScheduleUser(discordUsername):
-                #     loop = asyncio.new_event_loop()
-                #     asyncio.set_event_loop(loop)
-                #     loop.run_until_complete(discordUsername.send("123"))
-                #     # loop.close()
+    file.close()
 
-    def Test(self):
-        self.loop.run_until_complete(self.SendMsg("123"))
-        time.sleep(5)
-        self.loop.run_until_complete(self.SendMsg("123"))
-        time.sleep(5)
+    jsonString = '{"'+author+'": {"username": "' + \
+        username+'","password": "'+passwd+'"}}'
+    jsonString = json.loads(jsonString)
+    for i in data:
+        if i == jsonString:
+            return 2
 
-    async def SendMsg(self, msg):
-        await self.targetName.send(msg)
+    data.append(jsonString)
+
+    file = open(fileName, "w+")
+    json.dump(data, file)
+    file.close()
 
 
 client = discord.Client()
@@ -246,14 +265,18 @@ async def on_message(message):
             await message.channel.send("蛤?")
         elif tmp[1] == 'maimai':
             if tmp[2] == '自動存圖':
-
-                # 設定自動存圖的maimai net帳密
-                # threads.append(threading.Thread(
-                #     target=BotAddAutoSaveScheduleUser, args=(message.author,)))
-                # threads[len(threads)-1].start()
-                workQueue.put(message.author)
-                BotAddAutoSaveScheduleUser(message.author).start()
-
+                if len(tmp) != 5:
+                    await message.author.send('指令錯誤，正確格式為:')
+                    await message.author.send('```.uwu 自動存圖 "帳號" "密碼"(不含"符號)```')
+                    return
+                # 儲存自動存圖的maimai net帳密
+                err = SetAutoSaveUser(str(message.author.id), tmp[3], tmp[4])
+                if err == 1:
+                    await message.author.send('檔案錯誤')
+                elif err == 2:
+                    await message.author.send('此帳號已設定自動存圖')
+                else:
+                    workQueue.put(message.author.id)
         else:
             await message.channel.send(tmp[1])
 
@@ -263,12 +286,12 @@ async def on_message(message):
 client.run(DISCORD_BOT_TOKEN)  # TOKEN在剛剛Discord Developer那邊「BOT」頁面裡面
 
 
-# def main():
-#     chrome = webdriver.Chrome('./chromedriver.exe', chrome_options=options)
-#     chrome.get(url)
-#     Login_maimai_net(chrome, usernameCollection[0], passwordCollection[0])
-#     GetNewPhotos(chrome, usernameCollection[0])
+def main():
+    chrome = webdriver.Chrome('./chromedriver.exe', chrome_options=options)
+    chrome.get(url)
+    Login_maimai_net(chrome, usernameCollection[0], passwordCollection[0])
+    GetNewPhotos(chrome, usernameCollection[0])
 
 
-# if __name__ == '__main__':
-#     main()
+if __name__ == '__main__':
+    main()

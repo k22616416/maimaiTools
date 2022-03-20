@@ -1,0 +1,38 @@
+[
+    {
+        "author": {
+            "username": "user",
+            "password": "passwd"
+        }
+    },
+    {
+        "author": {
+            "username": "user",
+            "password": "passwd"
+        }
+    },
+    {
+        "author": {
+            "username": "user",
+            "password": "passwd"
+        }
+    },
+    {
+        "{author}": {
+            "username": "{username}",
+            "password": "{passwd}"
+        }
+    },
+    {
+        "test1": {
+            "username": "user1",
+            "password": "passwd1"
+        }
+    },
+    {
+        "test2": {
+            "username": "user2",
+            "password": "passwd2"
+        }
+    }
+]
