@@ -1,1 +1,37 @@
-[{"378159148862275584": {"username": "k22616416", "password": "kk013579"}}]
+[
+    {
+        "discordID": "378159148862275584",
+        "valuse": {
+            "username": "k22616416",
+            "password": "kk013579"
+        }
+    },
+    {
+        "discordID": "452164204628017152",
+        "valuse": {
+            "username": "pinguguo",
+            "password": "Mog1024x428"
+        }
+    },
+    {
+        "discordID": "244369812766195712",
+        "valuse": {
+            "username": "aa66998820",
+            "password": "Aaa1166778"
+        }
+    },
+    {
+        "discordID": "389106009106284544",
+        "valuse": {
+            "username": "xihe20001120",
+            "password": "julianlkh10"
+        }
+    },
+    {
+        "discordID": "239769873192976404",
+        "valuse": {
+            "username": "infinityastral",
+            "password": "shu2001AAA"
+        }
+    }
+]
