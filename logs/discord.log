@@ -1,0 +1,72 @@
+2022-04-12 21:08:04,877:WARNING:discord.gateway: Shard ID None heartbeat blocked for more than 10 seconds.
+Loop thread traceback (most recent call last):
+  File "C:\Python39\lib\runpy.py", line 197, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "C:\Python39\lib\runpy.py", line 87, in _run_code
+    exec(code, run_globals)
+  File "c:\Users\kk013\.vscode\extensions\ms-python.python-2022.4.0\pythonFiles\lib\python\debugpy\__main__.py", line 45, in <module>
+    cli.main()
+  File "c:\Users\kk013\.vscode\extensions\ms-python.python-2022.4.0\pythonFiles\lib\python\debugpy/..\debugpy\server\cli.py", line 444, in main
+    run()
+  File "c:\Users\kk013\.vscode\extensions\ms-python.python-2022.4.0\pythonFiles\lib\python\debugpy/..\debugpy\server\cli.py", line 285, in run_file
+    runpy.run_path(target_as_str, run_name=compat.force_str("__main__"))
+  File "C:\Python39\lib\runpy.py", line 268, in run_path
+    return _run_module_code(code, init_globals, run_name,
+  File "C:\Python39\lib\runpy.py", line 97, in _run_module_code
+    _run_code(code, mod_globals, init_globals,
+  File "C:\Python39\lib\runpy.py", line 87, in _run_code
+    exec(code, run_globals)
+  File "f:\Github\maimaiTools\maimai_Info.py", line 458, in <module>
+    client.run(DISCORD_BOT_TOKEN)
+  File "C:\Python39\lib\site-packages\discord\client.py", line 713, in run
+    loop.run_forever()
+  File "C:\Python39\lib\asyncio\windows_events.py", line 316, in run_forever
+    super().run_forever()
+  File "C:\Python39\lib\asyncio\base_events.py", line 596, in run_forever
+    self._run_once()
+  File "C:\Python39\lib\asyncio\base_events.py", line 1890, in _run_once
+    handle._run()
+  File "C:\Python39\lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Python39\lib\site-packages\discord\ext\tasks\__init__.py", line 101, in _loop
+    await self.coro(*args, **kwargs)
+  File "f:\Github\maimaiTools\maimai_Info.py", line 341, in GetNewPhotosTask
+    photoFiles = GetNewPhotos(chrome, userDcId)
+  File "f:\Github\maimaiTools\maimai_Info.py", line 146, in GetNewPhotos
+    date = dateTag.text
+  File "C:\Python39\lib\site-packages\selenium\webdriver\remote\webelement.py", line 76, in text
+    return self._execute(Command.GET_ELEMENT_TEXT)['value']
+  File "C:\Python39\lib\site-packages\selenium\webdriver\remote\webelement.py", line 628, in _execute
+    return self._parent.execute(command, params)
+  File "C:\Python39\lib\site-packages\selenium\webdriver\remote\webdriver.py", line 318, in execute
+    response = self.command_executor.execute(driver_command, params)
+  File "C:\Python39\lib\site-packages\selenium\webdriver\remote\remote_connection.py", line 375, in execute
+    return self._request(command_info[0], url, body=data)
+  File "C:\Python39\lib\site-packages\selenium\webdriver\remote\remote_connection.py", line 397, in _request
+    resp = self._conn.request(method, url, body=body, headers=headers)
+  File "C:\Python39\lib\site-packages\urllib3\request.py", line 74, in request
+    return self.request_encode_url(
+  File "C:\Python39\lib\site-packages\urllib3\request.py", line 96, in request_encode_url
+    return self.urlopen(method, url, **extra_kw)
+  File "C:\Python39\lib\site-packages\urllib3\poolmanager.py", line 375, in urlopen
+    response = conn.urlopen(method, u.request_uri, **kw)
+  File "C:\Python39\lib\site-packages\urllib3\connectionpool.py", line 699, in urlopen
+    httplib_response = self._make_request(
+  File "C:\Python39\lib\site-packages\urllib3\connectionpool.py", line 440, in _make_request
+    httplib_response = conn.getresponse()
+  File "C:\Python39\lib\http\client.py", line 1347, in getresponse
+    response.begin()
+  File "C:\Python39\lib\http\client.py", line 307, in begin
+    version, status, reason = self._read_status()
+  File "C:\Python39\lib\http\client.py", line 268, in _read_status
+    line = str(self.fp.readline(_MAXLINE + 1), "iso-8859-1")
+  File "C:\Python39\lib\socket.py", line 704, in readinto
+    return self._sock.recv_into(b)
+
+2022-04-12 21:08:11,603:ERROR:discord.client: Attempting a reconnect in 0.46s
+Traceback (most recent call last):
+  File "C:\Python39\lib\site-packages\discord\client.py", line 566, in connect
+    await self.ws.poll_event()
+  File "C:\Python39\lib\site-packages\discord\gateway.py", line 582, in poll_event
+    raise ConnectionClosed(self.socket, shard_id=self.shard_id, code=code) from None
+discord.errors.ConnectionClosed: Shard ID None WebSocket closed with 1000
